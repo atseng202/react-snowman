@@ -186,6 +186,17 @@ exports[`snapshot test for losing game should render a losing message and correc
         z
       </button>
     </p>
+    <p
+      class=""
+    >
+      You lose. Correct word is 
+      apple
+    </p>
+    <p
+      class="hidden"
+    >
+      You win!
+    </p>
   </div>
 </div>
 `;

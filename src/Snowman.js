@@ -9,6 +9,7 @@ import img4 from "./4.png";
 import img5 from "./5.png";
 import img6 from "./6.png";
 
+import { randomWord, ENGLISH_WORDS } from "./words";
 
 /** Snowman game: plays hangman-style game with a melting snowman.
  *
@@ -28,15 +29,15 @@ function Snowman(props) {
 
   const [nWrong, setNWrong] = useState(0);
   const [guessed, setGuessed] = useState(new Set());
-  const [answer, setAnswer] = useState((props.words)[0]);
+  const [answer, setAnswer] = useState(() => randomWord(props.words));
 
   /** guessedWord: show current-state of word:
    if guessed letters are {a,p,e}, show "app_e" for "apple"
    */
   function guessedWord() {
     return answer
-        .split("")
-        .map(ltr => (guessed.has(ltr) ? ltr : "_"));
+      .split("")
+      .map(ltr => (guessed.has(ltr) ? ltr : "_"));
   }
 
   /** handleGuess: handle a guessed letter:
@@ -59,16 +60,23 @@ function Snowman(props) {
   function generateButtons() {
     const isHidden = (nWrong >= props.maxWrong || guessedWord().join("") === answer) ? "hidden" : "";
     return "abcdefghijklmnopqrstuvwxyz".split("").map(ltr => (
-        <button
-            key={ltr}
-            value={ltr}
-            onClick={handleGuess}
-            disabled={guessed.has(ltr)}
-            className={isHidden}
-        >
-          {ltr}
-        </button>
+      <button
+        key={ltr}
+        value={ltr}
+        onClick={handleGuess}
+        disabled={guessed.has(ltr)}
+        className={isHidden}
+      >
+        {ltr}
+      </button>
     ));
+  }
+
+  /* handleRestart: restarts the game with a new random word */
+  function handleRestart(evt) {
+    setNWrong(() => 0);
+    setGuessed(() => new Set());
+    setAnswer(() => randomWord(props.words));
   }
 
   /** render: render game */
@@ -82,6 +90,7 @@ function Snowman(props) {
       <p>{generateButtons()}</p>
       <p className={showLoseMsg}>You lose. Correct word is {answer}</p>
       <p className={showWinMsg}>You win!</p>
+      <button className="Snowman-restart" onClick={handleRestart}>Restart</button>
     </div>
   );
 }
@@ -89,7 +98,7 @@ function Snowman(props) {
 Snowman.defaultProps = {
   maxWrong: 6,
   images: [img0, img1, img2, img3, img4, img5, img6],
-  words: ["apple"],
+  words: ENGLISH_WORDS,
 };
 
 
